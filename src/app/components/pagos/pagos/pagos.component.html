@@ -1,0 +1,62 @@
+<ng-template #accionesHeader>
+  <button
+    type="button"
+    class="btn-cerrar-sesion"
+    (click)="cerrarSesion()"
+    aria-label="Cerrar sesión"
+    *ngIf="sesionActiva"
+  >
+    <img src="assets/icons/logout.svg" alt="" aria-hidden="true" />
+    <span>Cerrar sesión</span>
+  </button>
+</ng-template>
+
+<app-indicador-pasos [pasoActual]="pasoActual" />
+
+<ng-container *ngIf="!cargandoSesion; else cargandoSesionTpl">
+  <section class="panel-flujo" [ngSwitch]="pasoActual">
+    <ng-container *ngSwitchCase="1">
+      <div class="panel-blanco paso-autenticacion">
+        <h2>Autenticación requerida</h2>
+        <p>Necesitas iniciar sesión para continuar con el proceso de pagos.</p>
+        <button class="btn-base btn-primario" type="button" (click)="iniciarSesion()" [disabled]="autenticando">
+          {{ autenticando ? 'Redirigiendo…' : 'Iniciar sesión' }}
+        </button>
+        <p class="estado estado--error" *ngIf="errorAutenticacion">{{ errorAutenticacion }}</p>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="2">
+      <app-paso-seleccion-concepto (continuar)="manejarSeleccionConcepto($event)" />
+    </ng-container>
+
+    <ng-container *ngSwitchCase="3">
+      <app-paso-facturas
+        *ngIf="datosPago.conceptoSeleccionado as concepto"
+        [conceptoId]="concepto.id"
+        [camposValidadores]="datosPago.camposValidadores"
+        [facturasPreseleccionadas]="datosPago.facturasSeleccionadas"
+        (continuar)="manejarSeleccionFacturas($event)"
+        (volver)="manejarVolver()"
+      />
+    </ng-container>
+
+    <ng-container *ngSwitchCase="4">
+      <app-paso-seleccion-banco
+        (continuar)="manejarSeleccionBanco($event)"
+        (volver)="manejarVolver()"
+      />
+    </ng-container>
+
+    <ng-container *ngSwitchDefault>
+      <div class="panel-blanco" role="alert">
+        <p>Estamos preparando el flujo de pago.</p>
+      </div>
+    </ng-container>
+  </section>
+</ng-container>
+<ng-template #cargandoSesionTpl>
+  <div class="panel-blanco paso-autenticacion" aria-busy="true">
+    <p>Verificando sesión...</p>
+  </div>
+</ng-template>

@@ -1,0 +1,53 @@
+.paso-concepto {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.paso-concepto__card {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.paso-concepto__formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.paso-concepto__formulario--campos {
+  border-top: 1px solid #e4e7eb;
+  padding-top: 1.5rem;
+}
+
+.paso-concepto__campos {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.paso-concepto__label {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.requerido {
+  color: #dc2626;
+  margin-left: 0.25rem;
+}
+
+.paso-concepto__acciones {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 640px) {
+  .paso-concepto__card {
+    padding: 1.5rem;
+  }
+
+  .paso-concepto__acciones {
+    justify-content: center;
+  }
+}

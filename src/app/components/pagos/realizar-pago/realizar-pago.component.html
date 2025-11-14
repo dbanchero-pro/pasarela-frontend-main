@@ -1,0 +1,34 @@
+<section class="panel-blanco panel-pago" aria-live="polite">
+  <h1 class="titulo-home-banking">Home Banking</h1>
+  <ng-container *ngIf="idTransaccion; else faltaTransaccion">
+    <h2>Estás a punto de pagar</h2>
+    <p>Este paso replica la redirección al sistema externo de pagos.</p>
+
+    <dl class="panel-pago__detalle">
+      <div>
+        <dt>Número de transacción</dt>
+        <dd>{{ idTransaccion }}</dd>
+      </div>
+      <div>
+        <dt>Entidad</dt>
+        <dd>Simulación local</dd>
+      </div>
+    </dl>
+
+    <div class="panel-pago__acciones">
+      <button
+        type="button"
+        class="btn-base btn-primario"
+        (click)="pagar()"
+        [disabled]="procesando"
+      >
+        {{ procesando ? 'Redirigiendo…' : 'Pagar' }}
+      </button>
+      <a class="btn-base btn-secundario" routerLink="/">Cancelar</a>
+    </div>
+  </ng-container>
+  <ng-template #faltaTransaccion>
+    <p>No encontramos la transacción solicitada.</p>
+    <a class="btn-base btn-primario" routerLink="/">Volver al inicio</a>
+  </ng-template>
+</section>

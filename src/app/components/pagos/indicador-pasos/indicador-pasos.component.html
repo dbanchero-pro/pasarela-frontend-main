@@ -1,0 +1,32 @@
+<div class="indicador">
+  <div class="indicador__lista">
+    <ng-container *ngFor="let paso of pasos; index as indice">
+      <div class="indicador__grupo">
+        <div class="indicador__paso">
+          <div
+            class="indicador__circulo"
+            [class.indicador__circulo--activo]="indice + 1 === pasoActual"
+            [class.indicador__circulo--completado]="indice + 1 < pasoActual"
+          >
+            <ng-container *ngIf="indice + 1 < pasoActual; else numero">
+              <span aria-hidden="true">&#10003;</span>
+              <span class="sr-only">Paso completado</span>
+            </ng-container>
+            <ng-template #numero>{{ indice + 1 }}</ng-template>
+          </div>
+          <span
+            class="indicador__etiqueta"
+            [class.indicador__etiqueta--activa]="indice + 1 === pasoActual"
+          >
+            {{ paso }}
+          </span>
+        </div>
+        <div
+          *ngIf="indice < pasos.length - 1"
+          class="indicador__conector"
+          [class.indicador__conector--activo]="indice + 1 < pasoActual"
+        ></div>
+      </div>
+    </ng-container>
+  </div>
+</div>

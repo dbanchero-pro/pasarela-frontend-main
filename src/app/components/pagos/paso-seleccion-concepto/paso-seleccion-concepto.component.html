@@ -1,0 +1,41 @@
+<div class="paso-concepto">
+  <div class="panel-blanco paso-concepto__card">
+    <form class="paso-concepto__formulario" [formGroup]="formularioConcepto">
+      <label for="conceptoId" class="paso-concepto__label">Concepto a pagar</label>
+      <select id="conceptoId" formControlName="conceptoId">
+        <option value="" disabled>Seleccione un concepto</option>
+        <option *ngFor="let concepto of conceptos" [value]="concepto.id">
+          {{ concepto.nombre }}
+        </option>
+      </select>
+    </form>
+
+    <form
+      *ngIf="conceptoSeleccionado"
+      class="paso-concepto__formulario paso-concepto__formulario--campos"
+      [formGroup]="formularioCampos"
+      (ngSubmit)="enviar()"
+    >
+      <div class="paso-concepto__campos">
+        <div class="campo" *ngFor="let campo of conceptoSeleccionado.campos">
+          <label [for]="campo.id" class="paso-concepto__label">
+            {{ campo.nombre }}
+            <span *ngIf="campo.requerido" aria-hidden="true" class="requerido">*</span>
+          </label>
+          <input
+            [id]="campo.id"
+            [type]="campo.tipo === 'numero' ? 'number' : 'text'"
+            [formControlName]="campo.id"
+            [placeholder]="'Ingrese ' + campo.nombre.toLowerCase()"
+          />
+        </div>
+      </div>
+
+      <div class="paso-concepto__acciones">
+        <button type="submit" class="btn-base btn-primario" [disabled]="!puedeContinuar">
+          Continuar al paso siguiente
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,44 @@
+.panel-pago {
+  margin-top: 2rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.titulo-home-banking {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--color-primario);
+}
+
+.panel-pago__detalle {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+
+  dt {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #64748b;
+    margin: 0;
+  }
+
+  dd {
+    margin: 0.25rem 0 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+}
+
+.panel-pago__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .panel-pago {
+    padding: 1.5rem;
+  }
+}

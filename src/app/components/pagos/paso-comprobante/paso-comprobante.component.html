@@ -1,0 +1,111 @@
+<div class="comprobante">
+  <div class="panel-blanco comprobante__card">
+    <div class="comprobante__cabecera">
+      <h2>Intendencia de Canelones</h2>
+      <h3>Comprobante de Pago Electrónico</h3>
+    </div>
+
+    <div class="comprobante__resumen">
+      <div>
+        <p class="etiqueta">Fecha de emisión</p>
+        <p>{{ comprobante.fechaEmision }}</p>
+      </div>
+      <div>
+        <p class="etiqueta">Hora</p>
+        <p>{{ comprobante.hora }}</p>
+      </div>
+      <div>
+        <p class="etiqueta">N.º de comprobante</p>
+        <p class="comprobante__codigo-destacado">{{ comprobante.numeroComprobante }}</p>
+      </div>
+    </div>
+
+    <div class="comprobante__grid">
+      <div>
+        <p class="etiqueta">Contribuyente</p>
+        <p>{{ comprobante.contribuyente }}</p>
+      </div>
+      <div *ngIf="comprobante.codigoMunicipal">
+        <p class="etiqueta">Código Municipal</p>
+        <p>{{ comprobante.codigoMunicipal }}</p>
+      </div>
+      <div *ngIf="comprobante.padron">
+        <p class="etiqueta">Padrón</p>
+        <p>{{ comprobante.padron }}</p>
+      </div>
+      <div *ngIf="comprobante.numeroTramite">
+        <p class="etiqueta">N.º de trámite</p>
+        <p>{{ comprobante.numeroTramite }}</p>
+      </div>
+      <div>
+        <p class="etiqueta">Localidad</p>
+        <p>{{ comprobante.localidad }}</p>
+      </div>
+      <div>
+        <p class="etiqueta">Tributo</p>
+        <p>{{ comprobante.tributo }}</p>
+      </div>
+      <div>
+        <p class="etiqueta">Periodo</p>
+        <p>{{ comprobante.periodo }}</p>
+      </div>
+    </div>
+
+    <div class="comprobante__destacado">
+      <p class="etiqueta">Monto pagado</p>
+      <p class="comprobante__monto">${{ comprobante.montoPagado | number: '1.2-2' }}</p>
+    </div>
+
+    <div class="comprobante__detalle">
+      <div>
+        <p class="etiqueta">Forma de pago</p>
+        <p>{{ comprobante.formaPago }}</p>
+      </div>
+      <div>
+        <p class="etiqueta">Autorización</p>
+        <p>{{ comprobante.autorizacion }}</p>
+      </div>
+      <div>
+        <p class="etiqueta">Estado</p>
+        <span class="pill pill--exito">{{ comprobante.estado }}</span>
+      </div>
+      <div>
+        <p class="etiqueta">Fecha de vencimiento</p>
+        <p>{{ comprobante.fechaVencimiento }}</p>
+      </div>
+    </div>
+
+    <div class="comprobante__codigo">
+      <p class="etiqueta">Código de verificación</p>
+      <p class="comprobante__codigo-valor">{{ comprobante.codigoVerificacion }}</p>
+    </div>
+
+    <div class="comprobante__nota">
+      <p>Este comprobante tiene validez legal como constancia de pago.</p>
+      <p>Puedes verificar su autenticidad en www.imcanelones.gub.uy</p>
+    </div>
+
+    <div class="comprobante__email">
+      <button
+        class="btn-base btn-secundario"
+        type="button"
+        (click)="enviarComprobantePorEmail()"
+        [disabled]="estadoCorreo === 'enviando' || estadoCorreo === 'enviado'"
+      >
+        <ng-container *ngIf="estadoCorreo === 'enviando'; else labelCorreo">
+          Enviando...
+        </ng-container>
+        <ng-template #labelCorreo>
+          {{ estadoCorreo === 'enviado' ? 'Comprobante enviado' : 'Enviar comprobante por email' }}
+        </ng-template>
+      </button>
+      <p class="comprobante__estado-correo" *ngIf="mensajeCorreo">{{ mensajeCorreo }}</p>
+    </div>
+
+    <div class="comprobante__acciones">
+      <button class="btn-base btn-primario" type="button" (click)="nuevoPago.emit()">
+        Realizar nuevo pago
+      </button>
+    </div>
+  </div>
+</div>

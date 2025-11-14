@@ -1,0 +1,44 @@
+<div class="paso-banco">
+  <div class="panel-blanco paso-banco__card">
+    <div class="paso-banco__texto">
+      <h2>Seleccione banco/red de pago</h2>
+      <p>Elige una entidad habilitada para finalizar el pago.</p>
+    </div>
+
+  <div *ngIf="cargando" class="estado">Cargando bancos...</div>
+
+  <ul class="lista-bancos" *ngIf="!cargando">
+    <li *ngFor="let banco of bancos">
+      <label class="tarjeta-banco" [class.tarjeta-banco--activo]="bancoSeleccionado?.id === banco.id">
+        <span class="tarjeta-banco__logo" aria-hidden="true">
+          <img [src]="banco.logo" [alt]="''" />
+        </span>
+        <span class="sr-only">{{ banco.nombre }}</span>
+        <span class="tarjeta-banco__radio">
+          <input
+            type="radio"
+            name="banco"
+            [value]="banco.id"
+            [checked]="bancoSeleccionado?.id === banco.id"
+            (change)="seleccionarBanco(banco)"
+          />
+        </span>
+      </label>
+    </li>
+  </ul>
+
+  <div class="paso-banco__acciones">
+    <button class="btn-base btn-secundario" type="button" (click)="volver.emit()">
+        Volver al paso anterior
+      </button>
+      <button
+        class="btn-base btn-primario"
+        type="button"
+        (click)="continuarPaso()"
+        [disabled]="!bancoSeleccionado"
+      >
+        Proceder al pago
+      </button>
+    </div>
+  </div>
+</div>
