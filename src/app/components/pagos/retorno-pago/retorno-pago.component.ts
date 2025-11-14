@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
@@ -8,7 +8,6 @@ import { PasoComprobanteComponent } from "../paso-comprobante/paso-comprobante.c
 import { ComprobantePago } from "../../../models/comprobante-pago.model";
 import { ComprobantePagoService } from "../../../services/comprobante-pago.service";
 import { PaginaLayoutService } from "../../../services/pagina-layout.service";
-import { AutenticacionService } from "../../../services/autenticacion.service";
 
 @Component({
   selector: "app-retorno-pago",
@@ -18,34 +17,23 @@ import { AutenticacionService } from "../../../services/autenticacion.service";
   styleUrl: "./retorno-pago.component.scss"
 })
 export class RetornoPagoComponent implements OnInit, OnDestroy {
-  @ViewChild("accionesHeader", { static: true }) accionesHeader?: TemplateRef<unknown>;
   comprobante: ComprobantePago | null = null;
   cargando = true;
   mensajeError = "";
   private idTransaccion = "";
-  sesionActiva = false;
 
   constructor(
     private readonly ruta: ActivatedRoute,
     private readonly router: Router,
     private readonly comprobanteServicio: ComprobantePagoService,
-    private readonly layout: PaginaLayoutService,
-    private readonly autenticacionServicio: AutenticacionService
+    private readonly layout: PaginaLayoutService
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.layout.establecerAcciones(null);
-    await this.verificarSesion();
     this.layout.configurar({
-      titulo: "Comprobante del pago",
       descripcion: "Revisa el detalle del paso final.",
-      mostrarEncabezado: true,
-      mostrarPie: true,
-      mostrarAcciones: this.sesionActiva
+      mostrarAcciones: true
     });
-    if (this.sesionActiva) {
-      this.layout.establecerAcciones(this.accionesHeader ?? null);
-    }
     this.idTransaccion = this.ruta.snapshot.paramMap.get("idTransaccion") ?? "";
     if (!this.idTransaccion) {
       this.cargando = false;
@@ -58,13 +46,6 @@ export class RetornoPagoComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.layout.reiniciar();
-  }
-
-  async cerrarSesion(): Promise<void> {
-    await this.autenticacionServicio.cerrarSesion(window.location.origin);
-    this.sesionActiva = false;
-    this.layout.establecerAcciones(null);
-    this.layout.configurar({ mostrarAcciones: false });
   }
 
   async recargar(): Promise<void> {
@@ -88,9 +69,5 @@ export class RetornoPagoComponent implements OnInit, OnDestroy {
     } else {
       this.mensajeError = "";
     }
-  }
-
-  private async verificarSesion(): Promise<void> {
-    this.sesionActiva = await this.autenticacionServicio.estaAutenticado();
   }
 }

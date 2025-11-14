@@ -19,7 +19,7 @@ export class PasoFacturasComponent implements OnChanges {
   @Input({ required: true }) camposValidadores: Record<string, string> = {};
   @Input() facturasPreseleccionadas: Factura[] = [];
 
-  @Output() continuar = new EventEmitter<Factura[]>();
+  @Output() continuar = new EventEmitter<{ facturas: Factura[]; enviarComprobante: boolean }>();
   @Output() volver = new EventEmitter<void>();
 
   facturas: Factura[] = [];
@@ -27,6 +27,7 @@ export class PasoFacturasComponent implements OnChanges {
   paginaActual = 1;
   readonly facturasPorPagina = 2;
   cargando = false;
+  enviarComprobantePorEmail = true;
 
   constructor(private readonly facturasServicio: FacturasService) {}
 
@@ -116,7 +117,12 @@ export class PasoFacturasComponent implements OnChanges {
   }
 
   continuarPaso(): void {
-    this.continuar.emit(this.facturas);
+    this.continuar.emit({ facturas: this.facturas, enviarComprobante: this.enviarComprobantePorEmail });
+  }
+
+  actualizarPreferenciaCorreo(evento: Event): void {
+    const input = evento.target as HTMLInputElement;
+    this.enviarComprobantePorEmail = input.checked;
   }
 
   generarNumerosPagina(): (number | null)[] {

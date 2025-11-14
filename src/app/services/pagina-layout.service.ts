@@ -1,4 +1,4 @@
-import { Injectable, TemplateRef } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 
 export interface PaginaLayoutConfig {
@@ -7,7 +7,6 @@ export interface PaginaLayoutConfig {
   mostrarEncabezado: boolean;
   mostrarPie: boolean;
   mostrarAcciones: boolean;
-  accionesTemplate: TemplateRef<unknown> | null;
 }
 
 const CONFIG_INICIAL: PaginaLayoutConfig = {
@@ -15,8 +14,7 @@ const CONFIG_INICIAL: PaginaLayoutConfig = {
   descripcion: "",
   mostrarEncabezado: true,
   mostrarPie: true,
-  mostrarAcciones: false,
-  accionesTemplate: null
+  mostrarAcciones: false
 };
 
 @Injectable({ providedIn: "root" })
@@ -27,10 +25,6 @@ export class PaginaLayoutService {
   configurar(parcial: Partial<PaginaLayoutConfig>): void {
     const actual = this.configuracionSubject.getValue();
     this.configuracionSubject.next({ ...actual, ...parcial });
-  }
-
-  establecerAcciones(template: TemplateRef<unknown> | null): void {
-    this.configurar({ accionesTemplate: template });
   }
 
   reiniciar(): void {

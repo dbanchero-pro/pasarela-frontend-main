@@ -85,21 +85,10 @@
       <p>Puedes verificar su autenticidad en www.imcanelones.gub.uy</p>
     </div>
 
-    <div class="comprobante__email">
-      <button
-        class="btn-base btn-secundario"
-        type="button"
-        (click)="enviarComprobantePorEmail()"
-        [disabled]="estadoCorreo === 'enviando' || estadoCorreo === 'enviado'"
-      >
-        <ng-container *ngIf="estadoCorreo === 'enviando'; else labelCorreo">
-          Enviando...
-        </ng-container>
-        <ng-template #labelCorreo>
-          {{ estadoCorreo === 'enviado' ? 'Comprobante enviado' : 'Enviar comprobante por email' }}
-        </ng-template>
+    <div class="comprobante__descarga">
+      <button class="btn-base btn-secundario" type="button" (click)="descargarComprobante()">
+        Descargar comprobante
       </button>
-      <p class="comprobante__estado-correo" *ngIf="mensajeCorreo">{{ mensajeCorreo }}</p>
     </div>
 
     <div class="comprobante__acciones">

@@ -106,17 +106,9 @@
   font-size: 0.95rem;
 }
 
-.comprobante__email {
+.comprobante__descarga {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.comprobante__estado-correo {
-  font-size: 0.9rem;
-  color: #475467;
-  margin: 0;
+  justify-content: center;
 }
 
 .comprobante__acciones {

@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
@@ -31,13 +31,13 @@ import { PaginaLayoutService } from "../../../services/pagina-layout.service";
   styleUrl: "./pagos.component.scss"
 })
 export class PagosComponent implements OnInit, OnDestroy {
-  @ViewChild("accionesHeader", { static: true }) accionesHeader?: TemplateRef<unknown>;
   pasoActual = 1;
   datosPago: DatosPago = {
     conceptoSeleccionado: null,
     camposValidadores: {},
     facturasSeleccionadas: [],
-    bancoSeleccionado: null
+    bancoSeleccionado: null,
+    enviarComprobantePorEmail: true
   };
   sesionActiva = false;
   cargandoSesion = true;
@@ -54,18 +54,13 @@ export class PagosComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.layout.configurar({
-      titulo: "Pagos en Línea",
       descripcion: "",
-      mostrarEncabezado: true,
-      mostrarPie: true,
-      mostrarAcciones: this.sesionActiva
+      mostrarAcciones: true
     });
-    this.layout.establecerAcciones(this.accionesHeader ?? null);
     void this.verificarSesion();
   }
 
   ngOnDestroy(): void {
-    this.layout.establecerAcciones(null);
     this.layout.reiniciar();
   }
 
@@ -74,7 +69,6 @@ export class PagosComponent implements OnInit, OnDestroy {
     this.sesionActiva = await this.autenticacionServicio.estaAutenticado();
     this.pasoActual = this.sesionActiva ? 2 : 1;
     this.cargandoSesion = false;
-    this.actualizarLayoutAcciones();
   }
 
   async iniciarSesion(): Promise<void> {
@@ -92,12 +86,6 @@ export class PagosComponent implements OnInit, OnDestroy {
     }
   }
 
-  async cerrarSesion(): Promise<void> {
-    await this.autenticacionServicio.cerrarSesion(window.location.origin);
-    this.sesionActiva = false;
-    this.actualizarLayoutAcciones();
-  }
-
   actualizarPaso(paso: number): void {
     this.pasoActual = paso;
   }
@@ -113,7 +101,8 @@ export class PagosComponent implements OnInit, OnDestroy {
     this.actualizarPaso(3);
   }
 
-  async manejarSeleccionFacturas(facturas: Factura[]): Promise<void> {
+  async manejarSeleccionFacturas(evento: { facturas: Factura[]; enviarComprobante: boolean }): Promise<void> {
+    const { facturas, enviarComprobante } = evento;
     const facturasSeleccionadas = facturas.filter((factura) => factura.seleccionada);
     const totalSeleccionado = facturasSeleccionadas.reduce(
       (total, factura) => total + factura.importeTotal,
@@ -122,14 +111,16 @@ export class PagosComponent implements OnInit, OnDestroy {
 
     this.datosPago = {
       ...this.datosPago,
-      facturasSeleccionadas
+      facturasSeleccionadas,
+      enviarComprobantePorEmail: enviarComprobante
     };
 
     if (totalSeleccionado === 0) {
       const comprobante = await this.generarComprobante({
         ...this.datosPago,
         facturasSeleccionadas,
-        bancoSeleccionado: null
+        bancoSeleccionado: null,
+        enviarComprobantePorEmail: enviarComprobante
       });
       await this.redirigirAlPasoFinal(comprobante.numeroComprobante, false);
       return;
@@ -187,7 +178,4 @@ export class PagosComponent implements OnInit, OnDestroy {
     return { url: urlNormalizada, esExterna };
   }
 
-  private actualizarLayoutAcciones(): void {
-    this.layout.configurar({ mostrarAcciones: this.sesionActiva });
-  }
 }

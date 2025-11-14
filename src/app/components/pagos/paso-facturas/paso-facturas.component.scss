@@ -84,6 +84,20 @@
   gap: 1.5rem;
 }
 
+.paso-facturas__preferencias {
+  display: flex;
+  justify-content: flex-start;
+  padding: 0 0.5rem;
+}
+
+.selector-correo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
 .tarjeta-factura {
   border: 1px solid #e2e8f0;
   border-radius: 0.75rem;

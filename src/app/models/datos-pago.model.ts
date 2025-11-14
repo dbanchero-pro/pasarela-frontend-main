@@ -7,4 +7,5 @@ export interface DatosPago {
   camposValidadores: Record<string, string>;
   facturasSeleccionadas: Factura[];
   bancoSeleccionado: Banco | null;
+  enviarComprobantePorEmail: boolean;
 }

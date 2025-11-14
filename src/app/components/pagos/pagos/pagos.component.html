@@ -1,16 +1,3 @@
-<ng-template #accionesHeader>
-  <button
-    type="button"
-    class="btn-cerrar-sesion"
-    (click)="cerrarSesion()"
-    aria-label="Cerrar sesión"
-    *ngIf="sesionActiva"
-  >
-    <img src="assets/icons/logout.svg" alt="" aria-hidden="true" />
-    <span>Cerrar sesión</span>
-  </button>
-</ng-template>
-
 <app-indicador-pasos [pasoActual]="pasoActual" />
 
 <ng-container *ngIf="!cargandoSesion; else cargandoSesionTpl">

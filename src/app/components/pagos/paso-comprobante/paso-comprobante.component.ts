@@ -1,9 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { firstValueFrom } from "rxjs";
 
 import { ComprobantePago } from "../../../models/comprobante-pago.model";
-import { EnvioCorreoService } from "../../../services/envio-correo.service";
 
 @Component({
   selector: "app-paso-comprobante",
@@ -16,26 +14,15 @@ export class PasoComprobanteComponent {
   @Input({ required: true }) comprobante!: ComprobantePago;
   @Output() nuevoPago = new EventEmitter<void>();
 
-  estadoCorreo: "idle" | "enviando" | "enviado" | "error" = "idle";
-  mensajeCorreo = "";
-
-  constructor(private readonly envioCorreo: EnvioCorreoService) {}
-
-  async enviarComprobantePorEmail(): Promise<void> {
-    if (this.estadoCorreo === "enviando" || this.estadoCorreo === "enviado") {
+  descargarComprobante(): void {
+    if (!this.comprobante?.archivoBase64) {
       return;
     }
-
-    this.estadoCorreo = "enviando";
-    this.mensajeCorreo = "Enviando comprobante...";
-
-    try {
-      await firstValueFrom(this.envioCorreo.enviarCorreoComprobante(this.comprobante));
-      this.estadoCorreo = "enviado";
-      this.mensajeCorreo = "Comprobante enviado con éxito.";
-    } catch {
-      this.estadoCorreo = "error";
-      this.mensajeCorreo = "No pudimos enviar el correo. Intenta nuevamente.";
-    }
+    const tipo = this.comprobante.tipoArchivo || "application/octet-stream";
+    const nombre = this.comprobante.nombreArchivo || "comprobante.txt";
+    const enlace = document.createElement("a");
+    enlace.href = `data:${tipo};base64,${this.comprobante.archivoBase64}`;
+    enlace.download = nombre;
+    enlace.click();
   }
 }

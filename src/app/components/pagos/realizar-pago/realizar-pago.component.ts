@@ -30,7 +30,6 @@ export class RealizarPagoComponent implements OnInit, OnDestroy {
       mostrarPie: false,
       mostrarAcciones: false
     });
-    this.layout.establecerAcciones(null);
   }
 
   ngOnDestroy(): void {

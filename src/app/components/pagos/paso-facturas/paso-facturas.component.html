@@ -120,6 +120,17 @@
     </aside>
   </div>
 
+  <div class="paso-facturas__preferencias">
+    <label class="selector-correo">
+      <input
+        type="checkbox"
+        [checked]="enviarComprobantePorEmail"
+        (change)="actualizarPreferenciaCorreo($event)"
+      />
+      <span>Enviar comprobante por email</span>
+    </label>
+  </div>
+
   <div class="paso-facturas__botones">
     <button class="btn-base btn-secundario" type="button" (click)="volver.emit()">
       Volver al paso anterior
