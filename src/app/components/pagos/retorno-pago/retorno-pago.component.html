@@ -1,0 +1,23 @@
+<app-indicador-pasos [pasoActual]="5" />
+
+<section class="panel-blanco panel-retorno" aria-live="polite">
+  <ng-container *ngIf="cargando">
+    <p>Estamos recuperando tu comprobante...</p>
+  </ng-container>
+
+  <ng-container *ngIf="!cargando">
+    <app-paso-comprobante
+      *ngIf="comprobante as resultado"
+      [comprobante]="resultado"
+      (nuevoPago)="iniciarNuevoPago()"
+    />
+
+    <div *ngIf="!comprobante" class="panel-retorno__error">
+      <p>{{ mensajeError }}</p>
+      <div class="panel-retorno__acciones">
+        <button type="button" class="btn-base btn-secundario" (click)="recargar()">Reintentar</button>
+        <a class="btn-base btn-primario" routerLink="/">Volver al inicio</a>
+      </div>
+    </div>
+  </ng-container>
+</section>

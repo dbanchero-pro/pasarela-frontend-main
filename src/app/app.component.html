@@ -1,0 +1,54 @@
+<div class="pagina" *ngIf="configuracion$ | async as config">
+  <header class="encabezado" *ngIf="config.mostrarEncabezado && !ocultarLayout">
+    <div class="contenedor encabezado__contenido">
+      <img src="assets/logo-canelones.png" alt="Gobierno de Canelones" class="encabezado__logo" />
+      <div class="encabezado__titulos">
+        <h1>Pagos en Línea</h1>
+        <p *ngIf="config.descripcion" class="encabezado__descripcion">{{ config.descripcion }}</p>
+      </div>
+      <div class="encabezado__acciones" *ngIf="config.mostrarAcciones && sesionActiva">
+        <button type="button" class="btn-cerrar-sesion" (click)="cerrarSesion()" aria-label="Cerrar sesión">
+          <img src="assets/icons/logout.svg" alt="" aria-hidden="true" />
+          <span>Cerrar sesión</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="contenedor contenido-principal">
+    <div *ngIf="(!config.mostrarEncabezado || ocultarLayout) && config.titulo" class="pagina__titulo-interno">
+      <h1>{{ config.titulo }}</h1>
+      <p *ngIf="config.descripcion" class="pagina__descripcion-interna">{{ config.descripcion }}</p>
+    </div>
+
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="pie" *ngIf="config.mostrarPie && !ocultarLayout">
+    <div class="pie__links">
+      <div class="contenedor">
+        <nav aria-label="Enlaces institucionales" class="pie__nav">
+          <a href="https://www.imcanelones.gub.uy/declaracion-de-accesibilidad" target="_blank" rel="noopener">Declaración de accesibilidad</a>
+          <a href="https://www.imcanelones.gub.uy/politica-de-privacidad" target="_blank" rel="noopener">Política de privacidad</a>
+          <a href="https://www.imcanelones.gub.uy/terminos-de-uso" target="_blank" rel="noopener">Términos de uso</a>
+          <a href="https://www.imcanelones.gub.uy/sitemap" target="_blank" rel="noopener">Mapa del sitio</a>
+          <a href="https://www.imcanelones.gub.uy/nuestros-sitios" target="_blank" rel="noopener">Nuestros sitios</a>
+        </nav>
+      </div>
+    </div>
+    <div class="pie__inferior">
+      <div class="contenedor pie__inferior-contenido">
+        <img src="assets/logo-canelones.png" alt="Gobierno de Canelones" />
+        <div class="pie__copy-redes">
+          <span>© 2025 - Todos los derechos reservados.</span>
+          <div class="pie__redes" aria-label="Redes sociales">
+            <a href="https://www.youtube.com/user/comunacanaria/feed" target="_blank" rel="noopener">YouTube</a>
+            <a href="https://www.facebook.com/gobiernodecanelones/" target="_blank" rel="noopener">Facebook</a>
+            <a href="https://twitter.com/IdCanelones" target="_blank" rel="noopener">Twitter</a>
+            <a href="https://www.instagram.com/canelones.id" target="_blank" rel="noopener">Instagram</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

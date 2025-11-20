@@ -1,0 +1,25 @@
+.panel-retorno {
+  margin-top: 2rem;
+  padding: 2rem;
+}
+
+.panel-retorno__error {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  text-align: center;
+}
+
+.panel-retorno__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .panel-retorno {
+    padding: 1.5rem;
+  }
+}

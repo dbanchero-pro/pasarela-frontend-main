@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+.paso-autenticacion {
+  padding: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 32rem;
+  width: min(100%, 32rem);
+}

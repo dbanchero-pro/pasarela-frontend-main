@@ -1,0 +1,142 @@
+<div class="paso-facturas">
+  <div class="paso-facturas__grid">
+    <div class="panel-blanco paso-facturas__panel">
+      <div class="paso-facturas__toolbar">
+        <div class="paso-facturas__fila-principal">
+          <label class="selector-masivo">
+            <input type="checkbox" [checked]="todasSeleccionadas" (change)="toggleTodas()" />
+            <span>Seleccionar todas las facturas</span>
+          </label>
+          <p class="selector-masivo__estado">
+            <span class="selector-masivo__numero">{{ facturasSeleccionadas }}</span>
+            de
+            <span class="selector-masivo__total">{{ facturas.length }}</span>
+            facturas seleccionadas
+          </p>
+        </div>
+
+        <div class="paso-facturas__orden">
+          <label for="criterio">Ordenar por:</label>
+          <select id="criterio" [value]="criterioOrden" (change)="cambiarOrden($any($event.target).value)">
+            <option value="vencimiento">Fecha de vencimiento</option>
+            <option value="monto">Monto</option>
+            <option value="numero">Número de factura</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="paso-facturas__separador"></div>
+
+      <div *ngIf="cargando" class="estado">Cargando facturas...</div>
+
+      <ng-container *ngIf="!cargando">
+        <div *ngIf="!facturas.length" class="estado estado--vacio">
+          No encontramos facturas para los datos ingresados.
+        </div>
+
+        <div class="paso-facturas__listado" *ngIf="facturas.length">
+          <article class="tarjeta-factura" *ngFor="let factura of facturasVisibles">
+            <div class="tarjeta-factura__encabezado">
+              <label class="tarjeta-factura__seleccion">
+                <input
+                  type="checkbox"
+                  [checked]="factura.seleccionada"
+                  (change)="toggleFactura(factura.numero)"
+                />
+                <div>
+                  <span class="tarjeta-factura__titulo">Factura {{ factura.numero }}</span>
+                  <p class="tarjeta-factura__padron">{{ factura.padron }}</p>
+                  <div class="tarjeta-factura__meta">
+                    <span>Año: {{ factura.anio }}</span>
+                    <span>Aux: {{ factura.auxiliar }}</span>
+                    <span>Emisión: {{ factura.emision }}</span>
+                  </div>
+                </div>
+              </label>
+              <div class="tarjeta-factura__importe">
+                <strong>${{ factura.importeTotal | number: '1.2-2' }}</strong>
+              </div>
+            </div>
+
+            <div class="tarjeta-factura__divider"></div>
+
+            <div class="tarjeta-factura__lineas">
+              <div class="linea" *ngFor="let linea of factura.lineas">
+                <span class="linea__descripcion">
+                  <strong>{{ linea.codigo }}</strong>
+                  <span> - {{ linea.descripcion }}</span>
+                </span>
+                <span class="linea__importe">${{ linea.importe | number: '1.2-2' }}</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </ng-container>
+
+      <div class="paginacion" *ngIf="totalPaginas > 1">
+        <button class="btn-paginacion" type="button" (click)="irAPagina(paginaActual - 1)" [disabled]="paginaActual === 1">
+          Anterior
+        </button>
+        <ng-container *ngFor="let pagina of generarNumerosPagina()">
+          <ng-container *ngIf="pagina !== null; else puntos">
+            <button
+              type="button"
+              class="btn-paginacion"
+              [class.activa]="paginaActual === pagina"
+              (click)="irAPagina(pagina)">
+              {{ pagina }}
+            </button>
+          </ng-container>
+          <ng-template #puntos>
+            <span class="puntos">...</span>
+          </ng-template>
+        </ng-container>
+        <button
+          type="button"
+          class="btn-paginacion"
+          (click)="irAPagina(paginaActual + 1)"
+          [disabled]="paginaActual === totalPaginas"
+        >
+          Siguiente
+        </button>
+      </div>
+    </div>
+
+    <aside class="panel-blanco resumen">
+      <h3>Resumen de deuda</h3>
+      <div *ngIf="resumen.conceptos.length; else sinDatos">
+        <div class="resumen__fila" *ngFor="let concepto of resumen.conceptos">
+          <span>{{ concepto.nombre }}</span>
+          <strong>${{ concepto.importe | number: '1.2-2' }}</strong>
+        </div>
+        <div class="resumen__total">
+          <span>Total</span>
+          <strong>${{ resumen.total | number: '1.2-2' }}</strong>
+        </div>
+      </div>
+      <ng-template #sinDatos>
+        <p class="estado">Selecciona al menos una factura para ver el resumen.</p>
+      </ng-template>
+    </aside>
+  </div>
+
+  <div class="paso-facturas__preferencias">
+    <label class="selector-correo">
+      <input
+        type="checkbox"
+        [checked]="enviarComprobantePorEmail"
+        (change)="actualizarPreferenciaCorreo($event)"
+      />
+      <span>Enviar comprobante por email</span>
+    </label>
+  </div>
+
+  <div class="paso-facturas__botones">
+    <button class="btn-base btn-secundario" type="button" (click)="volver.emit()">
+      Volver al paso anterior
+    </button>
+    <button class="btn-base btn-primario" type="button" (click)="continuarPaso()" [disabled]="!haySeleccion">
+      Continuar al paso siguiente
+    </button>
+  </div>
+</div>

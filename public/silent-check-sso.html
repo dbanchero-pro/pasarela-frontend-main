@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <script>
+      try {
+        parent.postMessage(window.location.href, window.location.origin);
+      } catch (error) {
+        parent.postMessage('kc-silent-check-sso-error', window.location.origin);
+      }
+    </script>
+  </body>
+</html>

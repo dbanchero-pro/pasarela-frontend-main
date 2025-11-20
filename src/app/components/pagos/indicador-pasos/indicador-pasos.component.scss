@@ -1,0 +1,124 @@
+.indicador {
+  margin-bottom: 2rem;
+}
+
+.indicador__lista {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.indicador__grupo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.indicador__paso {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.indicador__circulo {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  border: 2px solid #e2e8f0;
+  background-color: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #6b7280;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.indicador__circulo--activo {
+  background-color: var(--color-primario);
+  border-color: var(--color-primario);
+  color: #ffffff;
+}
+
+.indicador__circulo--completado {
+  background-color: #ffffff;
+  border-color: var(--color-primario);
+  color: var(--color-primario);
+}
+
+.indicador__etiqueta {
+  font-size: 0.75rem;
+  text-align: center;
+  max-width: 5rem;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.indicador__etiqueta--activa {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+
+.indicador__conector {
+  width: 2.5rem;
+  height: 2px;
+  margin: 0 0.5rem;
+  margin-top: -1.5rem;
+  background-color: #e2e8f0;
+}
+
+.indicador__conector--activo {
+  background-color: var(--color-primario);
+}
+
+@media (min-width: 640px) {
+  .indicador__conector {
+    width: 3rem;
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+  }
+
+  .indicador__etiqueta {
+    max-width: none;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .indicador__lista {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .indicador__grupo {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    width: 100%;
+  }
+
+  .indicador__paso {
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: center;
+    width: 100%;
+  }
+
+  .indicador__etiqueta {
+    text-align: center;
+    max-width: none;
+    width: 100%;
+  }
+
+  .indicador__conector {
+    width: 2px;
+    height: 1.5rem;
+    margin: 0.25rem auto;
+    transform: translateY(2px);
+  }
+}

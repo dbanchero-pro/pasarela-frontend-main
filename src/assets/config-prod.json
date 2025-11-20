@@ -1,0 +1,14 @@
+{
+  "apiUrl": "http://localhost:8080",
+  "keycloak": {
+    "url": "https://test2.comprasestatales.gub.uy/auth",
+    "realm": "pac-noprod",
+    "clientId": "gc-beta"
+  },
+  "extensionesPermitidas": ".pdf, .xls",
+  "urlBaseFrontEnd": "",
+  "loggingLevel": "DEBUG",
+  "archivosTamanoMaxBytes": 10485760,
+  "archivosCantidadMax": 10,
+  "urlRealizarPago": "/realizar-pago/:idTransaccion"
+}

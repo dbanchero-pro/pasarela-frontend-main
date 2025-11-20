@@ -1,0 +1,123 @@
+.comprobante {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.comprobante__card {
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.comprobante__cabecera {
+  text-align: center;
+
+  h2 {
+    margin: 0;
+    color: #0f172a;
+  }
+
+  h3 {
+    margin: 0.35rem 0 0;
+    color: #475467;
+  }
+}
+
+.etiqueta {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  margin-bottom: 0.25rem;
+}
+
+.comprobante__resumen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  text-align: center;
+}
+
+.comprobante__codigo-destacado {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primario);
+}
+
+.comprobante__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
+
+.comprobante__destacado {
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.comprobante__monto {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primario);
+}
+
+.comprobante__detalle {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.pill--exito {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.comprobante__codigo {
+  border-top: 1px dashed #e2e8f0;
+  padding-top: 1rem;
+}
+
+.comprobante__codigo-valor {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.comprobante__nota {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  color: #475467;
+  font-size: 0.95rem;
+}
+
+.comprobante__descarga {
+  display: flex;
+  justify-content: center;
+}
+
+.comprobante__acciones {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .comprobante__card {
+    padding: 1.5rem;
+  }
+}

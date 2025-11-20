@@ -1,0 +1,22 @@
+.not-found {
+  padding: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.not-found h1 {
+  margin: 0;
+  font-size: 3rem;
+  color: #0d6efd;
+}
+
+.not-found p {
+  margin: 0;
+  color: #6c757d;
+}
+
+.not-found a {
+  align-self: center;
+}

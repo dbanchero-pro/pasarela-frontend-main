@@ -1,0 +1,308 @@
+.paso-facturas {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.paso-facturas__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.paso-facturas__panel {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.paso-facturas__toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.paso-facturas__fila-principal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.selector-masivo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.selector-masivo__titulo {
+  display: block;
+}
+
+.selector-masivo__estado {
+  margin: 0;
+  font-weight: 400;
+  color: #6b7280;
+  font-size: 0.9rem;
+  text-align: right;
+}
+
+.selector-masivo__numero,
+.selector-masivo__total {
+  color: inherit;
+  font-weight: 600;
+}
+
+.paso-facturas__orden {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #0f172a;
+  flex-wrap: wrap;
+}
+
+.paso-facturas__separador {
+  height: 1px;
+  background-color: #e5e7eb;
+}
+
+.paso-facturas__orden select {
+  min-width: 180px;
+  width: min(220px, 100%);
+}
+
+.paso-facturas__listado {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.paso-facturas__preferencias {
+  display: flex;
+  justify-content: flex-start;
+  padding: 0 0.5rem;
+}
+
+.selector-correo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.tarjeta-factura {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  background-color: #ffffff;
+}
+
+.tarjeta-factura__encabezado {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.tarjeta-factura__seleccion {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.tarjeta-factura__titulo {
+  display: block;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.tarjeta-factura__padron {
+  margin: 0.35rem 0;
+  white-space: pre-line;
+  color: #4b5563;
+}
+
+.tarjeta-factura__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.tarjeta-factura__importe {
+  text-align: right;
+  color: #0f172a;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.tarjeta-factura__lineas {
+  padding-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-left: 2.5rem;
+}
+
+.tarjeta-factura__divider {
+  height: 1px;
+  background-color: #e5e8f0;
+  margin-top: 0.75rem;
+}
+
+.linea {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.95rem;
+  align-items: center;
+}
+
+.linea__descripcion {
+  color: #0f172a;
+}
+
+.linea__importe {
+  font-weight: 600;
+}
+
+.paso-facturas input[type="checkbox"] {
+  width: 0.95rem;
+  height: 0.95rem;
+  border: 1.5px solid #d0d7ee;
+  border-radius: 0.25rem;
+  background-color: #ffffff;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  margin: 0;
+}
+
+.paso-facturas input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 1px;
+}
+
+.paso-facturas input[type="checkbox"]:checked {
+  background-color: var(--color-primario);
+  border-color: var(--color-primario);
+}
+
+.paso-facturas input[type="checkbox"]:checked::after {
+  content: "";
+  width: 0.28rem;
+  height: 0.5rem;
+  border: 1.4px solid #ffffff;
+  border-top: 0;
+  border-left: 0;
+  transform: rotate(45deg);
+  position: absolute;
+  top: 0.08rem;
+  left: 0.28rem;
+}
+
+.estado {
+  font-size: 0.95rem;
+  color: #94a3b8;
+}
+
+.estado--vacio {
+  font-style: italic;
+}
+
+.paginacion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn-paginacion {
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.btn-paginacion:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-paginacion.activa {
+  background-color: var(--color-primario);
+  color: #ffffff;
+  border-color: var(--color-primario-borde);
+}
+
+.puntos {
+  color: #94a3b8;
+  padding: 0 0.25rem;
+}
+
+.resumen {
+  padding: 2rem;
+  position: sticky;
+  top: 1.5rem;
+  align-self: start;
+}
+
+.resumen__fila {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  color: #475467;
+}
+
+.resumen__total {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.paso-facturas__botones {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .paso-facturas__panel,
+  .resumen {
+    padding: 1.5rem;
+  }
+
+  .paso-facturas__toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .paso-facturas__botones {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 1024px) {
+  .paso-facturas__grid {
+    grid-template-columns: 2fr 1fr;
+  }
+}
