@@ -1,18 +1,25 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
-import { delay, map } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 import { ConceptoPago } from "../models/concepto-pago.model";
-import { conceptosPagoMock } from "./mock-data";
+import { AppConfigService } from "./app-config.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class ConceptosPagoService {
+  constructor(
+    private readonly http: HttpClient,
+    private readonly configuracion: AppConfigService
+  ) {}
+
   obtenerConceptos(): Observable<ConceptoPago[]> {
-    return of(conceptosPagoMock).pipe(
-      delay(150),
-      map((conceptos) => conceptos.map((concepto) => ({ ...concepto })))
-    );
+    return this.http.get<ConceptoPago[]>(`${this.apiBaseUrl}/conceptos`);
+  }
+
+  private get apiBaseUrl(): string {
+    const base = (this.configuracion.config.apiUrl ?? "").trim().replace(/\/+$/, "");
+    return base ? `${base}/api/ui/v1` : "/api/ui/v1";
   }
 }

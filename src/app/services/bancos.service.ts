@@ -1,18 +1,25 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
-import { delay, map } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 import { Banco } from "../models/banco.model";
-import { bancosMock } from "./mock-data";
+import { AppConfigService } from "./app-config.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class BancosService {
+  constructor(
+    private readonly http: HttpClient,
+    private readonly configuracion: AppConfigService
+  ) {}
+
   obtenerBancos(): Observable<Banco[]> {
-    return of(bancosMock).pipe(
-      delay(150),
-      map((bancos) => bancos.map((banco) => ({ ...banco })))
-    );
+    return this.http.get<Banco[]>(`${this.apiBaseUrl}/bancos`);
+  }
+
+  private get apiBaseUrl(): string {
+    const base = (this.configuracion.config.apiUrl ?? "").trim().replace(/\/+$/, "");
+    return base ? `${base}/api/ui/v1` : "/api/ui/v1";
   }
 }

@@ -15,7 +15,6 @@ export interface ComprobantePago {
   estado: 'Pagado' | 'Pendiente' | 'Rechazado';
   fechaVencimiento: string;
   codigoVerificacion: string;
-  archivoBase64: string;
   nombreArchivo: string;
   tipoArchivo: string;
 }

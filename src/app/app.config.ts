@@ -5,6 +5,7 @@ import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 
 import { routes } from './app.routes';
 import { AppConfigService } from './services/app-config.service';
+import { AppConfig } from './models/app-config.model';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,20 +20,46 @@ export const appConfig: ApplicationConfig = {
 
       return (async () => {
         const config = await appConfig.load();
-        await keycloak.init({
-          config: {
-            url: config.keycloak.url,
-            realm: config.keycloak.realm,
-            clientId: config.keycloak.clientId,
-          },
-          initOptions: {
-            onLoad: 'check-sso',
-            silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
-            checkLoginIframe: false,
-          },
-          enableBearerInterceptor: true,
-        });
+        await inicializarKeycloak(keycloak, config);
       })();
     }),
   ],
 };
+
+async function inicializarKeycloak(keycloak: KeycloakService, config: AppConfig): Promise<void> {
+  const keycloakConfig = {
+    url: config.keycloak.url,
+    realm: config.keycloak.realm,
+    clientId: config.keycloak.clientId,
+  };
+
+  const initOptions = {
+    onLoad: 'check-sso' as const,
+    silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+    checkLoginIframe: false,
+  };
+
+  try {
+    await keycloak.init({
+      config: keycloakConfig,
+      initOptions,
+      enableBearerInterceptor: true,
+    });
+    return;
+  } catch (error) {
+    console.warn('Keycloak no pudo inicializarse usando silent-check-sso; se reintentará sin esa verificación.', error);
+  }
+
+  const fallbackInitOptions = {
+    ...initOptions,
+    silentCheckSsoRedirectUri: undefined,
+    silentCheckSsoFallback: false,
+  };
+
+  await keycloak.init({
+    config: keycloakConfig,
+    initOptions: fallbackInitOptions,
+    enableBearerInterceptor: true,
+  });
+}
+

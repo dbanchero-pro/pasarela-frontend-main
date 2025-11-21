@@ -136,8 +136,8 @@ export class PagosComponent implements OnInit, OnDestroy {
     };
     this.datosPago = nuevosDatos;
 
-    const comprobante = await this.generarComprobante(nuevosDatos);
-    await this.redirigirAlPasoFinal(comprobante.numeroComprobante, true);
+    const idTransaccion = await this.iniciarTransaccion(nuevosDatos);
+    await this.redirigirAlPasoFinal(idTransaccion, true);
   }
 
   manejarVolver(): void {
@@ -148,6 +148,11 @@ export class PagosComponent implements OnInit, OnDestroy {
 
   private async generarComprobante(datosPago: DatosPago): Promise<ComprobantePago> {
     return await firstValueFrom(this.comprobanteServicio.generarComprobante(datosPago));
+  }
+
+  private async iniciarTransaccion(datosPago: DatosPago): Promise<string> {
+    const respuesta = await firstValueFrom(this.comprobanteServicio.iniciarTransaccion(datosPago));
+    return respuesta.idTransaccion;
   }
 
   private async redirigirAlPasoFinal(idTransaccion: string, requierePago: boolean): Promise<void> {

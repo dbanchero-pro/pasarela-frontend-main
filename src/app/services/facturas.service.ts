@@ -1,24 +1,30 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
-import { delay, map } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 import { Factura, ResumenDeuda } from "../models/factura.model";
-import { facturasPorConceptoMock } from "./mock-data";
+import { AppConfigService } from "./app-config.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class FacturasService {
+  constructor(
+    private readonly http: HttpClient,
+    private readonly configuracion: AppConfigService
+  ) {}
+
   obtenerFacturasPorConcepto(
     conceptoId: string,
     camposValidadores: Record<string, string>
   ): Observable<Factura[]> {
-    const facturas = facturasPorConceptoMock[conceptoId] ?? [];
-
-    return of(facturas).pipe(
-      delay(250),
-      map((lista) => lista.map((factura) => this.clonarFactura(factura)))
-    );
+    return this.http
+      .post<Factura[]>(`${this.apiBaseUrl}/facturas/buscar`, {
+        conceptoId,
+        camposValidadores
+      })
+      .pipe(map((lista) => lista.map((factura) => this.clonarFactura(factura))));
   }
 
   calcularResumen(facturas: Factura[]): ResumenDeuda {
@@ -54,5 +60,10 @@ export class FacturasService {
       ...factura,
       lineas: factura.lineas.map((linea) => ({ ...linea })),
     };
+  }
+
+  private get apiBaseUrl(): string {
+    const base = (this.configuracion.config.apiUrl ?? "").trim().replace(/\/+$/, "");
+    return base ? `${base}/api/ui/v1` : "/api/ui/v1";
   }
 }
