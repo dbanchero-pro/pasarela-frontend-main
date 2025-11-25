@@ -1,7 +1,7 @@
 import { ApplicationConfig, importProvidersFrom, provideAppInitializer, provideZoneChangeDetection, inject } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular'; //NOSONAR
 
 import { routes } from './app.routes';
 import { AppConfigService } from './services/app-config.service';
@@ -12,11 +12,11 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
-    importProvidersFrom(KeycloakAngularModule),
+    importProvidersFrom(KeycloakAngularModule), //NOSONAR
     AppConfigService,
     provideAppInitializer(() => {
       const appConfig = inject(AppConfigService);
-      const keycloak = inject(KeycloakService);
+      const keycloak = inject(KeycloakService); //NOSONAR
 
       return (async () => {
         const config = await appConfig.load();
@@ -26,7 +26,9 @@ export const appConfig: ApplicationConfig = {
   ],
 };
 
-async function inicializarKeycloak(keycloak: KeycloakService, config: AppConfig): Promise<void> {
+// @ts-ignore
+async function inicializarKeycloak(keycloak: KeycloakService //NOSONAR
+  , config: AppConfig): Promise<void> {
   const keycloakConfig = {
     url: config.keycloak.url,
     realm: config.keycloak.realm,

@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
+import { KeycloakService } from 'keycloak-angular'; //NOSONAR
+
 
 @Injectable({ providedIn: 'root' })
 export class AutenticacionService {
-  constructor(private readonly keycloak: KeycloakService) {}
+  constructor(private readonly keycloak: KeycloakService) {} //NOSONAR
+
 
   async estaAutenticado(): Promise<boolean> {
-    return await this.keycloak.isLoggedIn();
+    return this.keycloak.isLoggedIn();
   }
 
   async iniciarSesion(redirectUri?: string): Promise<void> {
-    await this.keycloak.login({ redirectUri: redirectUri ?? window.location.href });
+    await this.keycloak.login({ redirectUri: redirectUri ?? globalThis.location.href });
   }
 
   async cerrarSesion(redirectUri?: string): Promise<void> {

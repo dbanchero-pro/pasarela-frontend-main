@@ -5,6 +5,7 @@ import { map } from "rxjs/operators";
 
 import { Factura, FacturasPaginadas, ResumenDeuda } from "../models/factura.model";
 import { AppConfigService } from "./app-config.service";
+import { obtenerUrl } from "../utils/utils";
 
 @Injectable({
   providedIn: "root"
@@ -76,7 +77,7 @@ export class FacturasService {
   }
 
   private get apiBaseUrl(): string {
-    const base = (this.configuracion.config.apiUrl ?? "").trim().replace(/\/+$/, "");
+    const base = obtenerUrl(this.configuracion.config.apiUrl);
     return base ? `${base}/api/ui/v1` : "/api/ui/v1";
   }
 }

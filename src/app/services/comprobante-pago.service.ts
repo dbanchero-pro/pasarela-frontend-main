@@ -8,6 +8,7 @@ import { ComprobantePago } from "../models/comprobante-pago.model";
 import { DatosPago } from "../models/datos-pago.model";
 import { TransaccionPago } from "../models/transaccion-pago.model";
 import { AppConfigService } from "./app-config.service";
+import { obtenerUrl } from "../utils/utils";
 
 @Injectable({
   providedIn: "root"
@@ -37,7 +38,7 @@ export class ComprobantePagoService {
   }
 
   private get apiBaseUrl(): string {
-    const base = (this.configuracion.config.apiUrl ?? "").trim().replace(/\/+$/, "");
+    const base = obtenerUrl(this.configuracion.config.apiUrl);
     return base ? `${base}/api/ui/v1` : "/api/ui/v1";
   }
 }

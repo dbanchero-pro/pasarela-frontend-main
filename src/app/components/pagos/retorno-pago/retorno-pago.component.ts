@@ -29,7 +29,11 @@ export class RetornoPagoComponent implements OnInit, OnDestroy {
     private readonly layout: PaginaLayoutService
   ) {}
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
+    this.initAsync();
+  }
+
+  async initAsync(): Promise<void> {
     this.layout.configurar({
       descripcion: "Revisa el detalle del paso final.",
       mostrarAcciones: true

@@ -31,7 +31,7 @@ export class PasoFacturasComponent implements OnChanges {
   cargando = false;
   enviarComprobantePorEmail = true;
 
-  private seleccion = new Map<string, Factura>();
+  private readonly seleccion = new Map<string, Factura>();
 
   constructor(private readonly facturasServicio: FacturasService) {}
 

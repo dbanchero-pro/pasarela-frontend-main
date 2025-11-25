@@ -45,8 +45,8 @@ export class PasoComprobanteComponent {
     if (!archivo?.archivoBase64) {
       throw new Error("Archivo de comprobante vacío");
     }
-    const tipo = archivo.tipoArchivo || "application/octet-stream";
-    const nombre = archivo.nombreArchivo || `${archivo.numeroComprobante}.pdf`;
+    const tipo = archivo.tipoArchivo ?? "application/octet-stream";
+    const nombre = archivo.nombreArchivo ?? `${archivo.numeroComprobante}.pdf`;
     const enlace = document.createElement("a");
     enlace.href = `data:${tipo};base64,${archivo.archivoBase64}`;
     enlace.download = nombre;

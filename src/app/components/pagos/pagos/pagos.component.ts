@@ -15,6 +15,7 @@ import { ComprobantePagoService } from "../../../services/comprobante-pago.servi
 import { AutenticacionService } from "../../../services/autenticacion.service";
 import { AppConfigService } from "../../../services/app-config.service";
 import { PaginaLayoutService } from "../../../services/pagina-layout.service";
+import { obtenerUrl } from "../../../utils/utils";
 
 @Component({
   selector: "app-pagos",
@@ -77,8 +78,9 @@ export class PagosComponent implements OnInit, OnDestroy {
     this.autenticando = true;
     this.errorAutenticacion = "";
     try {
-      await this.autenticacionServicio.iniciarSesion(window.location.href);
+      await this.autenticacionServicio.iniciarSesion(globalThis.location.href);
     } catch (error) {
+      console.error(error);
       this.errorAutenticacion = "No pudimos iniciar sesión. Intenta nuevamente.";
     } finally {
       this.autenticando = false;
@@ -167,7 +169,7 @@ export class PagosComponent implements OnInit, OnDestroy {
   private obtenerUrlRealizarPago(idTransaccion: string): { url: string; esExterna: boolean } {
     const base = (this.configuracionServicio.config.urlRealizarPago ?? "/realizar-pago/:idTransaccion").trim();
     const incluyeParametro = base.includes(":idTransaccion");
-    const baseSinBarraFinal = incluyeParametro ? base : base.replace(/\/+$/, "");
+    const baseSinBarraFinal = obtenerUrl(base,incluyeParametro);
     const destino = incluyeParametro
       ? base.replace(":idTransaccion", idTransaccion)
       : `${baseSinBarraFinal}/${idTransaccion}`;
