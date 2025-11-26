@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 import { firstValueFrom } from "rxjs";
 
 import { Factura } from "../../../models/factura.model";
-import { FacturasQuery, FacturasService } from "../../../services/facturas.service";
+import { FacturasQuery, FacturaService } from "../../../services/factura.service";
 
 export type CriterioOrden = "numero" | "vencimiento" | "monto";
 
@@ -33,7 +33,7 @@ export class PasoFacturasComponent implements OnChanges {
 
   private readonly seleccion = new Map<string, Factura>();
 
-  constructor(private readonly facturasServicio: FacturasService) {}
+  constructor(private readonly facturasServicio: FacturaService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if ((changes["conceptoId"] && this.conceptoId) || changes["camposValidadores"]) {

@@ -37,7 +37,7 @@ async function inicializarKeycloak(keycloak: KeycloakService //NOSONAR
 
   const initOptions = {
     onLoad: 'check-sso' as const,
-    silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+    silentCheckSsoRedirectUri: globalThis.location.origin + '/silent-check-sso.html',
     checkLoginIframe: false,
   };
 

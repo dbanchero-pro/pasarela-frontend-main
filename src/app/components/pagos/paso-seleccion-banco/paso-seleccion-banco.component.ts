@@ -2,8 +2,8 @@ import { CommonModule } from "@angular/common";
 import { Component, DestroyRef, EventEmitter, OnInit, Output } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
-import { Banco } from "../../../models/banco.model";
-import { BancosService } from "../../../services/bancos.service";
+import { MedioPago } from "../../../models/medio-pago.model";
+import { MedioPagoService } from "../../../services/medio-pago.service";
 
 @Component({
   selector: "app-paso-seleccion-banco",
@@ -13,15 +13,15 @@ import { BancosService } from "../../../services/bancos.service";
   styleUrl: "./paso-seleccion-banco.component.scss"
 })
 export class PasoSeleccionBancoComponent implements OnInit {
-  @Output() continuar = new EventEmitter<Banco>();
+  @Output() continuar = new EventEmitter<MedioPago>();
   @Output() volver = new EventEmitter<void>();
 
-  bancos: Banco[] = [];
-  bancoSeleccionado: Banco | null = null;
+  bancos: MedioPago[] = [];
+  bancoSeleccionado: MedioPago | null = null;
   cargando = false;
 
   constructor(
-    private readonly bancosServicio: BancosService,
+    private readonly bancosServicio: MedioPagoService,
     private readonly destroyRef: DestroyRef
   ) {}
 
@@ -29,7 +29,7 @@ export class PasoSeleccionBancoComponent implements OnInit {
     this.cargarBancos();
   }
 
-  seleccionarBanco(banco: Banco): void {
+  seleccionarBanco(banco: MedioPago): void {
     this.bancoSeleccionado = banco;
   }
 
@@ -42,7 +42,7 @@ export class PasoSeleccionBancoComponent implements OnInit {
   private cargarBancos(): void {
     this.cargando = true;
     this.bancosServicio
-      .obtenerBancos()
+      .obtenerMediosPago()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (bancos) => {

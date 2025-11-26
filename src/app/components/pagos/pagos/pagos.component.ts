@@ -9,7 +9,7 @@ import { PasoFacturasComponent } from "../paso-facturas/paso-facturas.component"
 import { PasoSeleccionBancoComponent } from "../paso-seleccion-banco/paso-seleccion-banco.component";
 import { ConceptoPago } from "../../../models/concepto-pago.model";
 import { Factura } from "../../../models/factura.model";
-import { Banco } from "../../../models/banco.model";
+import { MedioPago } from "../../../models/medio-pago.model";
 import { DatosPago } from "../../../models/datos-pago.model";
 import { ComprobantePagoService } from "../../../services/comprobante-pago.service";
 import { AutenticacionService } from "../../../services/autenticacion.service";
@@ -125,7 +125,7 @@ export class PagosComponent implements OnInit, OnDestroy {
     this.actualizarPaso(4);
   }
 
-  async manejarSeleccionBanco(banco: Banco): Promise<void> {
+  async manejarSeleccionBanco(banco: MedioPago): Promise<void> {
     const nuevosDatos: DatosPago = {
       ...this.datosPago,
       bancoSeleccionado: banco
