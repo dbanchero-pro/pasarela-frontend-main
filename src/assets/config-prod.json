@@ -1,11 +1,11 @@
 {
   "apiUrl": "http://localhost:8080",
   "keycloak": {
-    "url": "https://test.comprasestatales.gub.uy/auth",
-    "realm": "pac-noprod",
+    "url": "https://keycloak-pac-cicd.192.168.180.190.nip.io/auth",
+    "realm": "pac-desarrollo",
     "clientId": "gc-frontend"
   },
-  "extensionesPermitidas": ".pdf, .xls",
+  "extensionesPermitidas": "",
   "urlBaseFrontEnd": "",
   "loggingLevel": "DEBUG",
   "archivosTamanoMaxBytes": 10485760,
