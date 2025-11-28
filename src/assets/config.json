@@ -1,5 +1,5 @@
 {
-  "apiUrl": "http://192.168.1.80:8080",
+  "apiUrl": "http://[::1]:8080",
   "keycloak": {
     "url": "https://keycloak-pac-cicd.192.168.180.190.nip.io/auth",
     "realm": "pac-desarrollo",
@@ -10,5 +10,5 @@
   "loggingLevel": "DEBUG",
   "archivosTamanoMaxBytes": 10485760,
   "archivosCantidadMax": 10,
-  "urlRealizarPago": "http://192.168.1.80:8080/api/ui/v1/transacciones/:idTransaccion/retorno"
+  "urlRealizarPago": "http://[::1]:8080/api/ui/v1/transacciones/:idTransaccion/retorno"
 }
