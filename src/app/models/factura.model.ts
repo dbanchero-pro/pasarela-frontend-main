@@ -27,3 +27,15 @@ export interface ConceptoDeuda {
   nombre: string;
   importe: number;
 }
+
+export interface FacturasPaginadas {
+  content: Factura[];
+  page: PageMetadata;
+}
+
+export interface PageMetadata {
+  size: number;
+  number: number;
+  totalElements: number;
+  totalPages: number;
+}

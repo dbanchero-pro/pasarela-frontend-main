@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 import { firstValueFrom } from "rxjs";
 
 import { Factura } from "../../../models/factura.model";
-import { FacturasService } from "../../../services/facturas.service";
+import { FacturasQuery, FacturaService } from "../../../services/factura.service";
 
 export type CriterioOrden = "numero" | "vencimiento" | "monto";
 
@@ -22,68 +22,58 @@ export class PasoFacturasComponent implements OnChanges {
   @Output() continuar = new EventEmitter<{ facturas: Factura[]; enviarComprobante: boolean }>();
   @Output() volver = new EventEmitter<void>();
 
-  facturas: Factura[] = [];
+  facturasPagina: Factura[] = [];
+  totalFacturas = 0;
   criterioOrden: CriterioOrden = "vencimiento";
+  ordenDireccion: "asc" | "desc" = "asc";
   paginaActual = 1;
   readonly facturasPorPagina = 2;
   cargando = false;
   enviarComprobantePorEmail = true;
 
-  constructor(private readonly facturasServicio: FacturasService) {}
+  private readonly seleccion = new Map<string, Factura>();
+
+  constructor(private readonly facturasServicio: FacturaService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if ((changes["conceptoId"] && this.conceptoId) || changes["camposValidadores"]) {
       this.paginaActual = 1;
+      this.actualizarSeleccionDesdePreseleccion();
       void this.cargarFacturas();
       return;
     }
 
     if (changes["facturasPreseleccionadas"] && !changes["conceptoId"]) {
-      this.sincronizarSeleccion();
-    }
-  }
-
-  get facturasOrdenadas(): Factura[] {
-    const copia = [...this.facturas];
-    switch (this.criterioOrden) {
-      case "numero":
-        return copia.sort((a, b) => a.numero.localeCompare(b.numero));
-      case "monto":
-        return copia.sort((a, b) => b.importeTotal - a.importeTotal);
-      case "vencimiento":
-      default:
-        return copia.sort((a, b) => this.parsearFecha(a.vencimiento) - this.parsearFecha(b.vencimiento));
+      this.actualizarSeleccionDesdePreseleccion();
+      this.facturasPagina = this.aplicarSeleccionPagina(this.facturasPagina);
     }
   }
 
   get totalPaginas(): number {
-    return Math.max(1, Math.ceil(this.facturasOrdenadas.length / this.facturasPorPagina));
-  }
-
-  get facturasVisibles(): Factura[] {
-    const inicio = (this.paginaActual - 1) * this.facturasPorPagina;
-    return this.facturasOrdenadas.slice(inicio, inicio + this.facturasPorPagina);
+    return Math.max(1, Math.ceil(this.totalFacturas / this.facturasPorPagina));
   }
 
   get resumen() {
-    return this.facturasServicio.calcularResumen(this.facturas);
+    return this.facturasServicio.calcularResumen(Array.from(this.seleccion.values()));
   }
 
   get haySeleccion(): boolean {
-    return this.facturas.some((factura) => factura.seleccionada);
+    return this.seleccion.size > 0;
   }
 
   get todasSeleccionadas(): boolean {
-    return this.facturas.length > 0 && this.facturas.every((factura) => factura.seleccionada);
+    return this.facturasPagina.length > 0 && this.facturasPagina.every((factura) => this.seleccion.has(factura.numero));
   }
 
   get facturasSeleccionadas(): number {
-    return this.facturas.filter((factura) => factura.seleccionada).length;
+    return this.seleccion.size;
   }
 
   cambiarOrden(criterio: CriterioOrden): void {
     this.criterioOrden = criterio;
+    this.ordenDireccion = criterio === "monto" ? "desc" : "asc";
     this.paginaActual = 1;
+    void this.cargarFacturas();
   }
 
   irAPagina(pagina: number | null): void {
@@ -91,33 +81,38 @@ export class PasoFacturasComponent implements OnChanges {
       return;
     }
     this.paginaActual = pagina;
+    void this.cargarFacturas();
   }
 
   toggleFactura(numero: string): void {
-    this.facturas = this.facturas.map((factura) => {
+    this.facturasPagina = this.facturasPagina.map((factura) => {
       if (factura.numero !== numero) {
         return factura;
       }
-      const seleccionada = !factura.seleccionada;
-      return {
-        ...factura,
-        seleccionada,
-        lineas: factura.lineas.map((linea) => ({ ...linea, seleccionada }))
-      };
+      const estabaSeleccionada = this.seleccion.has(numero);
+      if (estabaSeleccionada) {
+        this.seleccion.delete(numero);
+      } else {
+        this.seleccion.set(numero, this.clonarFactura(factura, true));
+      }
+      return this.clonarFactura(factura, !estabaSeleccionada);
     });
   }
 
   toggleTodas(): void {
     const estado = !this.todasSeleccionadas;
-    this.facturas = this.facturas.map((factura) => ({
-      ...factura,
-      seleccionada: estado,
-      lineas: factura.lineas.map((linea) => ({ ...linea, seleccionada: estado }))
-    }));
+    this.facturasPagina = this.facturasPagina.map((factura) => {
+      if (estado) {
+        this.seleccion.set(factura.numero, this.clonarFactura(factura, true));
+      } else {
+        this.seleccion.delete(factura.numero);
+      }
+      return this.clonarFactura(factura, estado);
+    });
   }
 
   continuarPaso(): void {
-    this.continuar.emit({ facturas: this.facturas, enviarComprobante: this.enviarComprobantePorEmail });
+    this.continuar.emit({ facturas: Array.from(this.seleccion.values()), enviarComprobante: this.enviarComprobantePorEmail });
   }
 
   actualizarPreferenciaCorreo(evento: Event): void {
@@ -160,39 +155,39 @@ export class PasoFacturasComponent implements OnChanges {
   private async cargarFacturas(): Promise<void> {
     this.cargando = true;
     try {
+      const opciones: FacturasQuery = {
+        pagina: Math.max(this.paginaActual - 1, 0),
+        tamanio: this.facturasPorPagina,
+        ordenCampo: this.criterioOrden,
+        ordenDireccion: this.ordenDireccion
+      };
       const respuesta = await firstValueFrom(
-        this.facturasServicio.obtenerFacturasPorConcepto(this.conceptoId, this.camposValidadores)
+        this.facturasServicio.obtenerFacturasPorConcepto(this.conceptoId, this.camposValidadores, opciones)
       );
-      this.facturas = this.aplicarPreseleccion(respuesta);
+      this.totalFacturas = respuesta.page.totalElements;
+      this.paginaActual = respuesta.page.number + 1;
+      this.facturasPagina = this.aplicarSeleccionPagina(respuesta.content);
     } finally {
       this.cargando = false;
     }
   }
 
-  private aplicarPreseleccion(facturas: Factura[]): Factura[] {
-    return facturas.map((factura) => {
-      const previa = this.facturasPreseleccionadas.find((item) => item.numero === factura.numero);
-      if (!previa || !previa.seleccionada) {
-        return factura;
-      }
-      return {
-        ...factura,
-        seleccionada: true,
-        lineas: factura.lineas.map((linea) => ({ ...linea, seleccionada: true }))
-      };
-    });
+  private aplicarSeleccionPagina(facturas: Factura[]): Factura[] {
+    return facturas.map((factura) => this.clonarFactura(factura, this.seleccion.has(factura.numero)));
   }
 
-  private sincronizarSeleccion(): void {
-    if (!this.facturas.length) {
-      return;
-    }
-    this.facturas = this.aplicarPreseleccion(this.facturas);
+  private actualizarSeleccionDesdePreseleccion(): void {
+    this.seleccion.clear();
+    this.facturasPreseleccionadas
+      .filter((factura) => factura.seleccionada)
+      .forEach((factura) => this.seleccion.set(factura.numero, this.clonarFactura(factura, true)));
   }
 
-  private parsearFecha(valor: string): number {
-    const [dia, mes, anio] = valor.split("/").map((parte) => Number(parte));
-    const fecha = new Date(anio, mes - 1, dia);
-    return fecha.getTime();
+  private clonarFactura(factura: Factura, seleccionada: boolean): Factura {
+    return {
+      ...factura,
+      seleccionada,
+      lineas: factura.lineas.map((linea) => ({ ...linea, seleccionada }))
+    };
   }
 }

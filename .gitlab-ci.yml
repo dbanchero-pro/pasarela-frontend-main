@@ -1,0 +1,33 @@
+image:
+  name: node-sonar-chromium:latest
+  pull_policy: if-not-present
+
+stages:
+  - test
+
+variables:
+  NODE_OPTIONS: "--max-old-space-size=4096"
+  GIT_DEPTH: "0"
+  CHROME_BIN: "/usr/bin/chromium"
+
+sonar_coverage:
+  stage: test
+  tags:
+    - playwright-frontend
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "sonarq"'
+  before_script: 
+    - "echo \"NODE_OPTIONS: $NODE_OPTIONS\""
+    - "echo \"CHROME_BIN: $CHROME_BIN\""
+    - "npm ci"
+    - "node --max-old-space-size=4096 ./node_modules/@angular/cli/bin/ng test --watch=false --browsers=ChromeHeadlessNoSandbox --code-coverage"
+  script:
+    - >
+      sonar-scanner
+      -Dsonar.host.url=${SONAR_HOST_URL}
+      -Dsonar.token=${SONAR_TOKEN}
+      -Dsonar.qualitygate.wait=true
+      -Dsonar.projectBaseDir=${CI_PROJECT_DIR}
+      -Dsonar.projectVersion=${CI_PIPELINE_ID}
+      -Dsonar.scm.revision=${CI_COMMIT_SHA}
+      -Dsonar.newCode.referenceBranch=main

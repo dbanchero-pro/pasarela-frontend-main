@@ -9,13 +9,13 @@ import { PasoFacturasComponent } from "../paso-facturas/paso-facturas.component"
 import { PasoSeleccionBancoComponent } from "../paso-seleccion-banco/paso-seleccion-banco.component";
 import { ConceptoPago } from "../../../models/concepto-pago.model";
 import { Factura } from "../../../models/factura.model";
-import { Banco } from "../../../models/banco.model";
+import { MedioPago } from "../../../models/medio-pago.model";
 import { DatosPago } from "../../../models/datos-pago.model";
-import { ComprobantePago } from "../../../models/comprobante-pago.model";
 import { ComprobantePagoService } from "../../../services/comprobante-pago.service";
 import { AutenticacionService } from "../../../services/autenticacion.service";
 import { AppConfigService } from "../../../services/app-config.service";
 import { PaginaLayoutService } from "../../../services/pagina-layout.service";
+import { obtenerUrl } from "../../../utils/utils";
 
 @Component({
   selector: "app-pagos",
@@ -78,8 +78,9 @@ export class PagosComponent implements OnInit, OnDestroy {
     this.autenticando = true;
     this.errorAutenticacion = "";
     try {
-      await this.autenticacionServicio.iniciarSesion(window.location.href);
+      await this.autenticacionServicio.iniciarSesion(globalThis.location.href);
     } catch (error) {
+      console.error(error);
       this.errorAutenticacion = "No pudimos iniciar sesión. Intenta nuevamente.";
     } finally {
       this.autenticando = false;
@@ -112,32 +113,27 @@ export class PagosComponent implements OnInit, OnDestroy {
     this.datosPago = {
       ...this.datosPago,
       facturasSeleccionadas,
-      enviarComprobantePorEmail: enviarComprobante
+      enviarComprobantePorEmail: enviarComprobante,
+      bancoSeleccionado: null
     };
 
-    if (totalSeleccionado === 0) {
-      const comprobante = await this.generarComprobante({
-        ...this.datosPago,
-        facturasSeleccionadas,
-        bancoSeleccionado: null,
-        enviarComprobantePorEmail: enviarComprobante
-      });
-      await this.redirigirAlPasoFinal(comprobante.numeroComprobante, false);
+    if (totalSeleccionado === 0 && facturasSeleccionadas.length > 0) {
+      await this.redirigirPagoSinImporte();
       return;
     }
 
     this.actualizarPaso(4);
   }
 
-  async manejarSeleccionBanco(banco: Banco): Promise<void> {
+  async manejarSeleccionBanco(banco: MedioPago): Promise<void> {
     const nuevosDatos: DatosPago = {
       ...this.datosPago,
       bancoSeleccionado: banco
     };
     this.datosPago = nuevosDatos;
 
-    const comprobante = await this.generarComprobante(nuevosDatos);
-    await this.redirigirAlPasoFinal(comprobante.numeroComprobante, true);
+    const idTransaccion = await this.iniciarTransaccion(nuevosDatos);
+    await this.navegarAHomeBanking(idTransaccion);
   }
 
   manejarVolver(): void {
@@ -146,16 +142,17 @@ export class PagosComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async generarComprobante(datosPago: DatosPago): Promise<ComprobantePago> {
-    return await firstValueFrom(this.comprobanteServicio.generarComprobante(datosPago));
+  private async iniciarTransaccion(datosPago: DatosPago): Promise<string> {
+    const respuesta = await firstValueFrom(this.comprobanteServicio.iniciarTransaccion(datosPago));
+    return respuesta.idTransaccion;
   }
 
-  private async redirigirAlPasoFinal(idTransaccion: string, requierePago: boolean): Promise<void> {
-    if (!requierePago) {
-      await this.router.navigate(["/retorno-pago", idTransaccion]);
-      return;
-    }
+  private async redirigirPagoSinImporte(): Promise<void> {
+    const idTransaccion = await this.iniciarTransaccion(this.datosPago);
+    await this.redirigirAUrlRealizarPago(idTransaccion);
+  }
 
+  private async redirigirAUrlRealizarPago(idTransaccion: string): Promise<void> {
     const destino = this.obtenerUrlRealizarPago(idTransaccion);
     if (destino.esExterna) {
       window.location.href = destino.url;
@@ -165,10 +162,14 @@ export class PagosComponent implements OnInit, OnDestroy {
     await this.router.navigateByUrl(destino.url);
   }
 
+  private async navegarAHomeBanking(idTransaccion: string): Promise<void> {
+    await this.router.navigate(["/realizar-pago", idTransaccion]);
+  }
+
   private obtenerUrlRealizarPago(idTransaccion: string): { url: string; esExterna: boolean } {
     const base = (this.configuracionServicio.config.urlRealizarPago ?? "/realizar-pago/:idTransaccion").trim();
     const incluyeParametro = base.includes(":idTransaccion");
-    const baseSinBarraFinal = incluyeParametro ? base : base.replace(/\/+$/, "");
+    const baseSinBarraFinal = obtenerUrl(base,incluyeParametro);
     const destino = incluyeParametro
       ? base.replace(":idTransaccion", idTransaccion)
       : `${baseSinBarraFinal}/${idTransaccion}`;

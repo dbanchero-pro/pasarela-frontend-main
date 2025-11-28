@@ -86,10 +86,18 @@
     </div>
 
     <div class="comprobante__descarga">
-      <button class="btn-base btn-secundario" type="button" (click)="descargarComprobante()">
-        Descargar comprobante
+      <button
+        class="btn-base btn-secundario"
+        type="button"
+        (click)="descargarComprobante()"
+        [disabled]="descargandoArchivo"
+      >
+        {{ descargandoArchivo ? "Descargando..." : "Descargar comprobante" }}
       </button>
     </div>
+    <p class="comprobante__descarga-error" *ngIf="errorDescarga">
+      No pudimos descargar el comprobante. Intentá nuevamente en unos segundos.
+    </p>
 
     <div class="comprobante__acciones">
       <button class="btn-base btn-primario" type="button" (click)="nuevoPago.emit()">

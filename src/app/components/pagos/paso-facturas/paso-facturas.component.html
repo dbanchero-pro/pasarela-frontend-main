@@ -1,6 +1,15 @@
 <div class="paso-facturas">
+  <div class="paso-facturas__preferencias">
+    <label class="selector-correo">
+      <input type="checkbox" [checked]="enviarComprobantePorEmail" (change)="actualizarPreferenciaCorreo($event)" />
+      <span>Enviar comprobante por email</span>
+    </label>
+  </div>
+
   <div class="paso-facturas__grid">
+  
     <div class="panel-blanco paso-facturas__panel">
+
       <div class="paso-facturas__toolbar">
         <div class="paso-facturas__fila-principal">
           <label class="selector-masivo">
@@ -10,7 +19,7 @@
           <p class="selector-masivo__estado">
             <span class="selector-masivo__numero">{{ facturasSeleccionadas }}</span>
             de
-            <span class="selector-masivo__total">{{ facturas.length }}</span>
+            <span class="selector-masivo__total">{{ totalFacturas }}</span>
             facturas seleccionadas
           </p>
         </div>
@@ -30,12 +39,12 @@
       <div *ngIf="cargando" class="estado">Cargando facturas...</div>
 
       <ng-container *ngIf="!cargando">
-        <div *ngIf="!facturas.length" class="estado estado--vacio">
+        <div *ngIf="!totalFacturas" class="estado estado--vacio">
           No encontramos facturas para los datos ingresados.
         </div>
 
-        <div class="paso-facturas__listado" *ngIf="facturas.length">
-          <article class="tarjeta-factura" *ngFor="let factura of facturasVisibles">
+        <div class="paso-facturas__listado" *ngIf="totalFacturas">
+          <article class="tarjeta-factura" *ngFor="let factura of facturasPagina">
             <div class="tarjeta-factura__encabezado">
               <label class="tarjeta-factura__seleccion">
                 <input
@@ -118,17 +127,6 @@
         <p class="estado">Selecciona al menos una factura para ver el resumen.</p>
       </ng-template>
     </aside>
-  </div>
-
-  <div class="paso-facturas__preferencias">
-    <label class="selector-correo">
-      <input
-        type="checkbox"
-        [checked]="enviarComprobantePorEmail"
-        (change)="actualizarPreferenciaCorreo($event)"
-      />
-      <span>Enviar comprobante por email</span>
-    </label>
   </div>
 
   <div class="paso-facturas__botones">

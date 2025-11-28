@@ -11,7 +11,7 @@ import { finalize } from "rxjs/operators";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { ConceptoPago } from "../../../models/concepto-pago.model";
-import { ConceptosPagoService } from "../../../services/conceptos-pago.service";
+import { ConceptoPagoService } from "../../../services/concepto-pago.service";
 
 interface EventoContinuarConcepto {
   concepto: ConceptoPago;
@@ -42,7 +42,7 @@ export class PasoSeleccionConceptoComponent implements OnInit {
 
   constructor(
     private readonly fb: NonNullableFormBuilder,
-    private readonly conceptosServicio: ConceptosPagoService,
+    private readonly conceptosServicio: ConceptoPagoService,
     private readonly destroyRef: DestroyRef
   ) {
     this.formularioConcepto = this.fb.group({

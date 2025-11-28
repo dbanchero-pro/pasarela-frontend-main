@@ -27,7 +27,11 @@ export class AppComponent implements OnInit {
     this.configuracion$ = this.layout.configuracion$;
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
+    this.initAsync();
+  }
+
+  async initAsync(): Promise<void> {
     await this.verificarSesion();
     this.actualizarOcultarLayout(this.router.url);
     this.router.events

@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox --code-coverage",
+    "testCodex": "export CHROME_BIN=$(node -e \"console.log(require('puppeteer').executablePath())\") && ng test --watch=false --browsers=ChromeHeadlessNoSandbox --code-coverage",
+    "testLocal": "ng test --browsers=ChromeHeadlessNoSandbox --code-coverage"
   },
   "private": true,
   "dependencies": {
