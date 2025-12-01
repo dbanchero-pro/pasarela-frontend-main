@@ -87,7 +87,7 @@
 .paso-facturas__preferencias {
   display: flex;
   justify-content: flex-start;
-  padding: 0 0.5rem;
+  padding: 1rem 0.5rem;
 }
 
 .selector-correo {
@@ -96,6 +96,7 @@
   gap: 0.5rem;
   font-weight: 600;
   color: #0f172a;
+  margin: 0.5rem 0;
 }
 
 .tarjeta-factura {
